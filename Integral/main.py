@@ -1,4 +1,3 @@
-import math
 import os
 
 # Алгоритм метода левых/правых прямоугольников с автоматическим выбором шага
@@ -11,40 +10,38 @@ os.system("cls")
 print("\t\t\t Приближенное вычисление площади фигуры под графиком методом левых прямоугольников")
 
 print("\t Ввод интервала на котором вычисляется площадь фигуры: ")
-a = int(input("Введите начальное значение x: ")) # min_x = 1
-b = int(input("Введите конечное значение x: ")) # max_x = 2
+min_x = int(input("Введите начальное значение x: ")) # a = 1
+max_x = int(input("Введите конечное значение x: ")) # b = 2
 
-e = float(input("Введите точность вычислений (пример = 0.01): ")) # accuracy = 0.0003
+accuracy = float(input("Введите точность вычислений (пример = 0.01): ")) # accuracy = 0.0001
 
 print("\t Выбор метода решения прямоугольниками: ")
-c = int(input("Введите 0 - левыми, 1 - правыми: ")) # method = 0
+method = int(input("Введите 0 - левыми, 1 - правыми: ")) # c = 0
 
 # Заданная функция
 func = '(2*x - 2)'
 
-N = n = 1 # Кол. прямоугольников (потом будет удваиваться) # count_of_rectangles
-s1 = 0 # Значение интеграла на пред. шаге # prev_integral
-s = 1 # Значение интеграла на тек. шаге (1, чтобы было больше s1 и цикл запустился) # cur_integral
-h = 0 # Ширина прямоугольника # rectangle_width
+RECTANGLES_AMOUNT = rectangles_amount = 1 # (потом будет удваиваться) # N n
+prev_integral = 0 # s1
+cur_integral = 1  # s (1, чтобы было больше prev_integral и цикл запустился) 
+rectangle_width = 0
 
-while abs(s - s1) > e: # Остановка расчётов по достижению заданной точности
-    s1 = s 
-    n = N = 2*N # Удваиваем кол. прямоугольников
+while abs(cur_integral - prev_integral) > accuracy: # Остановка расчётов по достижению заданной точности
+    prev_integral = cur_integral 
+    rectangles_amount = RECTANGLES_AMOUNT = 2*RECTANGLES_AMOUNT # Удвоение кол. прямоугольников
 
-    h = (b-a) / n # Опр. ширины прямоугольников
+    rectangle_width = (max_x-min_x) / rectangles_amount # Опр. ширины прямоугольников
 
-    x = a + c*h # Опр. x в зависимости от выбранного метода
-    s = 0
+    x = min_x + method*rectangle_width # Опр. x в зависимости от выбранного метода
+    cur_integral = 0
 
-    while n > 0:
-        n -= 1
+    while rectangles_amount > 0:
+        rectangles_amount -= 1
         F = calculate_area(x, func)
-        s += F
-        x += h
-    s = abs(s*h)
-    
+        cur_integral += F
+        x += rectangle_width
+    cur_integral = abs(cur_integral*rectangle_width)
 
-
-print(f'{n=}') # Вывод кол. интервалов разбиения
-print(f'{s=}') # Площадь полученной фигуры
-print("Ответ: {:11.3f}".format(s)) # 1 квадратная единица
+print(f"Итоговое кол. прямоугольников, на которое была поделена фигура под графиком = {rectangles_amount}")
+print(f"Площадь фигуры под графиком = {cur_integral}")
+print(f"Округленная площадь фигуры под графиком = {round(cur_integral)}")
